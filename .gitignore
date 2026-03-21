@@ -1,0 +1,13 @@
+# interphone_expandIC.uvguix.zheng
+# interphone_expandIC.uvoptx
+# .cmsis/
+Listings/
+Objects/
+# .eide/
+# .vscode/
+# *.code-workspace
+project/JLinkLog.txt
+# *.gitignore
+# project/interphone_expandIC.uvprojx
+# project/interphone_expandIC.uvoptx
+# project/interphone_expandIC.uvguix.zheng

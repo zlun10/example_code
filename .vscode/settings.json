@@ -1,0 +1,38 @@
+{
+    // "C_Cpp.default.compilerPath": "c:\\Program Files (x86)\\RV32-Toolchain\\MinGW32\\bin\\gcc.exe",
+    // C/C++ 格式化设置 - 定制样式以符合您的需求
+    "C_Cpp.formatting": "vcFormat",
+    "C_Cpp.vcFormat.indent.braces": false,
+    "C_Cpp.vcFormat.indent.caseLabels": false,
+    "C_Cpp.vcFormat.indent.caseContents": true,
+    "C_Cpp.vcFormat.newLine.beforeOpenBrace.function": "ignore",
+    "C_Cpp.vcFormat.newLine.beforeOpenBrace.block": "ignore",
+    "C_Cpp.vcFormat.newLine.beforeElse": false,
+    "C_Cpp.vcFormat.space.beforeFunctionOpenParenthesis": "remove",
+    "C_Cpp.vcFormat.space.afterKeywordsInControlFlowStatements": false,
+    "C_Cpp.vcFormat.space.withinControlFlowStatementParentheses": false,
+    "C_Cpp.vcFormat.space.betweenEmptyBraces": false,
+    "C_Cpp.vcFormat.space.beforeComma": false,
+    "C_Cpp.vcFormat.space.afterComma": true,
+    "C_Cpp.vcFormat.space.afterCastCloseParenthesis": true,
+    "C_Cpp.vcFormat.space.aroundBinaryOperator": "insert",
+    "C_Cpp.vcFormat.space.aroundAssignmentOperator": "insert",
+    "C_Cpp.vcFormat.space.pointerReferenceAlignment": "right",
+    "C_Cpp.vcFormat.space.beforeInitializerListOpenBrace": false,
+    // 设置为保存时自动格式化
+    "[c]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true
+    },
+    // 保存时不再执行额外的替换任务，避免对花括号进行改动
+    // 编辑器通用设置
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    // 注释格式化 - 确保 // 与内容之间有一个空格
+    "editor.comments.insertSpace": true
+}

@@ -1,0 +1,58 @@
+{
+    "configurations": [
+        {
+            "name": "demo",
+            "includePath": [
+                "${workspaceFolder}/app",
+                "${workspaceFolder}/bsp",
+                "${workspaceFolder}/chip/cw32l011/StdDriver/inc",
+                "${workspaceFolder}/chip/cw32l011/CMSIS/dev/inc",
+                "${workspaceFolder}/component",
+                "${workspaceFolder}/config",
+                "${workspaceFolder}/dev",
+                "${workspaceFolder}/examples",
+                "${workspaceFolder}/hal",
+                "${workspaceFolder}/lib/LCD",
+                "${workspaceFolder}/lib",
+                "${workspaceFolder}/tools/tests"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "LCD_DEMO"
+            ],
+            "compilerPath": "C:\\msys64\\mingw32\\bin\\gcc.exe",
+            "cStandard": "c17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "gcc-x64"
+        },
+        {
+            "name": "sfm",
+            "includePath": [
+                "${workspaceFolder}/app",
+                "${workspaceFolder}/bsp",
+                "${workspaceFolder}/chip/cw32l011/StdDriver/inc",
+                "${workspaceFolder}/chip/cw32l011/CMSIS/dev/inc",
+                "${workspaceFolder}/component",
+                "${workspaceFolder}/config",
+                "${workspaceFolder}/dev",
+                "${workspaceFolder}/examples",
+                "${workspaceFolder}/hal",
+                "${workspaceFolder}/lib/LCD",
+                "${workspaceFolder}/lib",
+                "${workspaceFolder}/tools/tests"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "C:\\msys64\\mingw32\\bin\\gcc.exe",
+            "cStandard": "c17",
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}
