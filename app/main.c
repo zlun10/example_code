@@ -1,7 +1,7 @@
 #include "main.h"
 void mcu_init(void);
 
-#define VERSION "V0.0.1"
+#define VERSION "v0.0.1"
 
 int main(void)
 {
