@@ -1,22 +1,27 @@
-/*
-rst       -- modlue MCRL
-power out -- module power control
-at_isr    -- module rsq
-*/
+/**
+ * @file module.c
+ * @brief 模组业务逻辑层实现
+ *
+ * 本模块负责：
+ *   1. 通过 HAL 接口（hal_module.h）完成硬件初始化，不直接操作寄存器
+ *   2. 维护模组中断通知计数器（中断安全）
+ *   3. 实现 hal_module_notify_callback()，供 HAL ISR 回调
+ *   4. 提供 module_synch() 将系统参数下发到模组
+ *
+ * 移植说明：
+ *   本文件无需修改。移植时只需实现 hal/src/hal_module.c 中的硬件接口。
+ */
 #include <stdint.h>
 #include "../inc/module.h"
-#include "../../drv/inc/drv_gpio.h"
-#include "../../drv/inc/drv_uart.h"
-#include "../../lib/misc.h"
-#include "../../lib/storage.h"
+#include "../../hal/inc/hal_module.h"
 #include "../../dev/inc/at.h"
-#include "../../dev/inc/sys_tick.h"
-#include "../../config/config.h"
 
+/* 模组中断通知计数器（volatile，供中断安全访问） */
 static volatile uint32_t module_notify_cnt = 0;
 
-#define ISR_PORT    CW_GPIOB
-#define ISR_PIN     GPIO_PIN_0
+/* ============================================================
+ * 内部辅助函数
+ * ============================================================ */
 
 static void module_notify_clr(void)
 {
@@ -25,30 +30,41 @@ static void module_notify_clr(void)
     __enable_irq();
 }
 
+/* ============================================================
+ * HAL 回调实现（由 hal_module.c 中的 ISR 调用）
+ * ============================================================ */
+
+/**
+ * @brief 模组中断通知回调
+ *
+ * 在 ISR 上下文中被 hal_module.c 调用，递增通知计数。
+ * hal_module.h 中声明此函数为需由 dev 层实现的回调。
+ */
+void hal_module_notify_callback(void)
+{
+    module_notify_cnt++;
+}
+
+/* ============================================================
+ * 对外接口实现
+ * ============================================================ */
+
 void module_init(void)
 {
     module_notify_clr();
+    hal_module_notify_init();
 }
 
 void module_deInit(void)
 {
+    hal_module_notify_deInit();
     module_notify_clr();
-}
-
-void GPIOB_IRQHandler(void)
-{
-    if(ISR_PORT->ISR & ISR_PIN) {
-        GPIOB_INTFLAG_CLR(ISR_PIN);
-        module_notify_cnt++;
-    }
-
-    if(CW_GPIOB->ISR & GPIO_PIN_7) { // 还用作唤醒
-        GPIOB_INTFLAG_CLR(GPIO_PIN_7);
-    }
 }
 
 void module_notify_post(void *param)
 {
+    /* param 为定时器事件回调的参数（StartTimerEvent 传入 NULL），暂未使用 */
+    (void)param;
     __disable_irq();
     module_notify_cnt++;
     __enable_irq();
@@ -70,39 +86,21 @@ bool module_notify_poll(void)
 
 void module_notify_init(void)
 {
-    GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-    GPIO_InitStruct.IT = GPIO_IT_RISING;
-    GPIO_InitStruct.Mode = GPIO_MODE_INPUT_PULLUP;
-    GPIO_InitStruct.Pins = ISR_PIN;
-    GPIO_Init(ISR_PORT, &GPIO_InitStruct);
-
-    GPIOB_INTFLAG_CLR(ISR_PIN);
-    NVIC_EnableIRQ(GPIOB_IRQn);
-    NVIC_SetPriority(GPIOB_IRQn, 0);
+    hal_module_notify_init();
 }
 
 void module_notify_deInit(void)
 {
-    GPIOB_INTFLAG_CLR(ISR_PIN);
-    NVIC_DisableIRQ(GPIOB_IRQn);
-    gpio_deinit(GPIO_AT_ISR);
+    hal_module_notify_deInit();
 }
 
 void MODULE_RST(void)
 {
-    gpio_modecfg(GPIO_POWER_OUT, GPIO_MODE_OUT);
-    gpio_set(GPIO_POWER_OUT, GPIO_SET);
-
-    gpio_modecfg(GPIO_RST, GPIO_MODE_OUT);
-    gpio_set(GPIO_RST, GPIO_RESET);
-    block_delayMs_4M(20);
-    gpio_set(GPIO_RST, GPIO_SET);
+    hal_module_rst();
 }
 
 void module_synch(void)
 {
-    SysParam_t *sysParam = getSysParam();
-
     at_send(AT_CMD_SET_SLEEP);
     at_send(AT_CMD_VOLUME);
     at_send(AT_CMD_GIDSET);
@@ -113,6 +111,5 @@ void module_synch(void)
 
 void module_notify_resume(void)
 {
-    gpio_modecfg(GPIO_RST, GPIO_MODE_OUT);
-    gpio_set(GPIO_RST, GPIO_SET);
+    hal_module_notify_resume();
 }

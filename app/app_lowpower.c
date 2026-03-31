@@ -20,6 +20,10 @@
 #include "../app/app_sleep.h"
 #include "../examples/telephone/telephone.h"
 
+/* 电源实体按键引脚（CW32L011 平台：GPIOC.13） */
+#define POWER_KEY_PORT    CW_GPIOC
+#define POWER_KEY_PIN     GPIO_PIN_13
+
 #define POWER_KEY_IRQn GPIOC_IRQn
 
 typedef enum {
