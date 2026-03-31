@@ -15,7 +15,6 @@
 #include "../../lib/misc.h"
 #include "../../lib/rb.h"
 
-#include "../../drv/inc/drv_uart.h"
 #include "../../hal/inc/hal-at.h"
 #include "../../config/config.h"
 
@@ -430,7 +429,7 @@ static void handle_bat(const char *at_buff)
 static void handle_baudrate(const char *at_buff)
 {
     (void) at_buff;  // 未使用
-    drv_atUart_init(MCU_BAUDRATE_INIT);
+    hal_at_reinit_baudrate(MCU_BAUDRATE_INIT);
     LOG_DEBUG("handle baudrate\n");
 }
 
@@ -504,12 +503,10 @@ void at_task(void)
     case AT_WAIT_RECV:
     {
         if((millis() - cxt->waitCnt) < cxt->waitTime) {
-            UartRcv_s *uart = getAtUart();
+            if(hal_at_is_line_ready()) {
+                char line_buf[HAL_AT_LINE_BUF_LEN];
 
-            if(uart->line_ready) {
-                char line_buf[UART_LINE_BUF_LEN];
-
-                if(drv_atUart_getLine(line_buf, sizeof(line_buf))) {
+                if(hal_at_get_line(line_buf, sizeof(line_buf))) {
                     uint16_t line_len = strlen(line_buf);
                     if((cxt->multi_line_len + line_len) < sizeof(cxt->multi_line_buf)) {
                         memcpy(cxt->multi_line_buf + cxt->multi_line_len, line_buf, line_len);
